@@ -103,3 +103,22 @@ struct Anillo<T>::Nodo * Anillo<T>::buscar(const T& elementoABuscar) {
 		return punteroANodo;
 	}
 }
+
+template <typename T>
+ostream& Anillo<T>::mostrarAnillo(ostream& out) const {
+	out << '[';
+
+	Nodo* actual = primero;
+	if (actual != NULL) {
+		do {
+			out << actual->elemento;
+			if (actual == elNodoAnterior)
+				out << '*';
+
+			actual = actual->proximo;
+		} while (actual != primero);
+	}
+
+	out << ']';
+}
+
