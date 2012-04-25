@@ -53,7 +53,8 @@ void Anillo<T>::agregar(const T& nuevoElemento) {
 
 template <typename T>
 void Anillo<T>::eliminar(const T& elementoAEliminar) {
-	struct Nodo * punteroAlNodo;
+	struct Nodo* punteroAlNodo;
+
 	if (primero->elemento == elementoAEliminar) {
 		punteroAlNodo = primero;
 		primero = punteroAlNodo->proximo;
@@ -61,14 +62,15 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 		punteroAlNodo = this->buscar(elementoAEliminar);
 	}
 
-	if (punteroAlNodo == NULL) {
-	{
+	if (punteroAlNodo != NULL) {
 		if (punteroAlNodo == elNodoAnterior) {
 			elNodoAnterior = NULL;
 		}
+
 		punteroAlNodo->anterior->proximo = punteroAlNodo->proximo;
 		punteroAlNodo->proximo->anterior = punteroAlNodo->anterior;
 		longitud--;
+
 		delete punteroAlNodo;
 	}
 }
@@ -96,7 +98,7 @@ struct Anillo<T>::Nodo * Anillo<T>::buscar(const T& elementoABuscar) {
 	}
 	if (punteroANodo == primero)
 	{
-			return NULL;
+		return NULL;
 	} else {
 		return punteroANodo;
 	}

@@ -11,10 +11,9 @@ using namespace std;
 template<typename T>
 class Anillo {
 public:
-
 	/*
-	 * constructor por defecto, crea un anillo
-	 */
+	* constructor por defecto, crea un anillo
+	*/
 	Anillo();
 
 	/*
@@ -92,39 +91,30 @@ public:
 	ostream& mostrarAnillo(ostream&) const;
 
 private:
-
-    struct Nodo {
-
-        T elemento;		//de tipo T
-        struct Nodo* proximo;
-        struct Nodo* anterior;
-
+	struct Nodo {
+		T elemento; //de tipo T
+		Nodo* proximo;
+		Nodo* anterior;
 	};
 
-
-
-	struct Nodo * primero;
-
-	struct Nodo * elNodoAnterior;
+	Nodo* primero;
+	Nodo* elNodoAnterior;
 
 	int longitud;
+	Nodo* buscar(const T&);
 
-    struct Nodo * buscar(const T&);
 	//No se puede modificar esta funcion.
 	Anillo<T>& operator=(const Anillo<T>& otro) {
-		assert(false);
-		return *this;
-
+			assert(false);
+			return *this;
 	}
 
 	//Aca va la implementacion del nodo.
-
-
 };
 
 template<class T>
 ostream& operator<<(ostream& out, const Anillo<T>& a) {
-	return a.mostrarAnillo(out);
+		return a.mostrarAnillo(out);
 }
 
 #endif //ANILLO_H_
