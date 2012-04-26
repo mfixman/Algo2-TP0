@@ -1,4 +1,11 @@
+#include <cstdlib>
+#include <cstdio>
 #include "anillo.h"
+
+#define LOG cerr << '\n' << '[' << __LINE__ << "] "
+
+
+bool kill = false;
 
 template <typename T>
 Anillo<T>::Anillo()
@@ -9,19 +16,67 @@ Anillo<T>::Anillo()
 }
 
 template <typename T>
+Anillo<T>::Anillo(const Anillo<T>& otro) {
+	Nodo* nodo = otro.primero;
+	Nodo* anterior = NULL;
+
+	do {
+		Nodo* nuevo = new Nodo();
+
+		assert(nodo != NULL);
+		assert(nuevo != NULL);
+
+		nuevo->elemento = nodo->elemento;
+		nuevo->anterior = anterior;
+
+		if (anterior != NULL)
+			anterior->proximo = nuevo;
+
+        anterior = nuevo;
+		nodo = nodo->proximo;
+	} while (nodo != otro.primero);
+	anterior->proximo = nodo;
+
+    primero = nodo;
+	elNodoAnterior = otro.elNodoAnterior;
+	longitud = otro.longitud;
+}
+
+template <typename T>
 Anillo<T>::~Anillo()
 {
-	while (this->esVacio()==false) {
-		this->eliminar(this->siguiente());
+	while (!esVacio()) {
+		LOG << longitud;
+		eliminar(siguiente());
 	}
-	delete primero;
-	primero = NULL;
+}
+
+template <typename T>
+bool Anillo<T>::operator==(const Anillo<T>& otro) const {
+	if (longitud != otro.longitud || elNodoAnterior != otro.elNodoAnterior)
+		return false;
+
+	Nodo* a = primero;
+	Nodo* b = otro.primero;
+
+	for (int i = 0; i < longitud; i++) {
+		assert(a != NULL);
+		assert(b != NULL);
+
+		if (a->elemento != b->elemento)
+			return false;
+
+		a = a->proximo;
+		b = b->proximo;
+	}
+
+	return true;
 }
 
 template <typename T>
 bool Anillo<T>::esVacio() const
 {
-	return (longitud == 0);
+	return longitud == 0;
 }
 
 template <typename T>
@@ -32,28 +87,41 @@ int Anillo<T>::tamanio() const
 
 template <typename T>
 const T& Anillo<T>::siguiente() {
+	assert(!esVacio());
+	assert(primero != NULL);
+
 	elNodoAnterior = primero;
 	primero = primero->proximo;
-	return primero->anterior->elemento;
+	return elNodoAnterior->elemento;
 }
 
 template <typename T>
 void Anillo<T>::agregar(const T& nuevoElemento) {
-	Nodo* punteroNuevoNodo = new Nodo;              //creo nuevo nodo
+	Nodo* punteroNuevoNodo = new Nodo(nuevoElemento);              //creo nuevo nodo con el elemento
 
-	punteroNuevoNodo->elemento = nuevoElemento;     //pongo el elemento a agregar en el nodo
-	punteroNuevoNodo->proximo = primero;          //lo pongo antes del que era el proximo
-	punteroNuevoNodo->anterior = primero->anterior;   //lo pongo despues del que ya paso
+	if (primero == NULL) {
+		primero = punteroNuevoNodo;                  //hago que el anillo apunte al nuevo nodo
+		primero->proximo = primero;
+		primero->anterior = primero;
+	} else {
+		punteroNuevoNodo->proximo = primero;          //lo pongo antes del que era el proximo
+		punteroNuevoNodo->anterior = primero->anterior;   //lo pongo despues del que ya paso
 
-	primero->anterior = punteroNuevoNodo;
-	punteroNuevoNodo->anterior->proximo = punteroNuevoNodo;
+		primero->anterior = punteroNuevoNodo;
+		punteroNuevoNodo->anterior->proximo = punteroNuevoNodo;
+
+		primero = punteroNuevoNodo;
+	}
+
 	longitud++;                                      //aumento la longitud del anillo
-	primero = punteroNuevoNodo;                   //hago que el anillo apunte al nuevo nodo
 }
 
 template <typename T>
 void Anillo<T>::eliminar(const T& elementoAEliminar) {
+	LOG << *this;
+
 	struct Nodo* punteroAlNodo;
+	LOG ;
 
 	if (primero->elemento == elementoAEliminar) {
 		punteroAlNodo = primero;
@@ -62,6 +130,7 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 		punteroAlNodo = this->buscar(elementoAEliminar);
 	}
 
+	LOG ;
 	if (punteroAlNodo != NULL) {
 		if (punteroAlNodo == elNodoAnterior) {
 			elNodoAnterior = NULL;
@@ -71,7 +140,12 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 		punteroAlNodo->proximo->anterior = punteroAlNodo->anterior;
 		longitud--;
 
+		LOG ;
 		delete punteroAlNodo;
+		LOG ;
+
+		if (longitud == 0)
+			primero = elNodoAnterior = NULL;
 	}
 }
 
@@ -82,6 +156,7 @@ bool Anillo<T>::huboAnterior() const{
 
 template <typename T>
 const T& Anillo<T>::anterior() const{
+	assert(elNodoAnterior != NULL);
 	return elNodoAnterior->elemento ;
 }
 
@@ -92,16 +167,23 @@ void Anillo<T>::retroceder() {
 
 template <typename T>
 struct Anillo<T>::Nodo * Anillo<T>::buscar(const T& elementoABuscar) {
-	struct Nodo * punteroANodo = primero->proximo;
-	while (punteroANodo->elemento != elementoABuscar && punteroANodo != primero) {
-		punteroANodo = punteroANodo->proximo;
-	}
-	if (punteroANodo == primero)
-	{
+	LOG << longitud;
+	if (longitud == 0)
 		return NULL;
-	} else {
-		return punteroANodo;
-	}
+
+	struct Nodo* punteroANodo = primero;
+	assert (punteroANodo != NULL);
+	LOG << elementoABuscar;
+
+	do {
+		if (punteroANodo->elemento == elementoABuscar)
+			return punteroANodo;
+
+		LOG << longitud << ' ' << punteroANodo << ' ' << primero;
+		punteroANodo = punteroANodo->proximo;
+	} while (punteroANodo != primero);
+
+	return NULL;
 }
 
 template <typename T>

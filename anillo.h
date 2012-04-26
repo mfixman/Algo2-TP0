@@ -95,6 +95,15 @@ private:
 		T elemento; //de tipo T
 		Nodo* proximo;
 		Nodo* anterior;
+
+		~Nodo() {
+		}
+
+		Nodo(const T& elemento_) : elemento(elemento_) {
+		}
+
+		Nodo() {
+		}
 	};
 
 	Nodo* primero;

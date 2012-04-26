@@ -57,18 +57,53 @@ void MostrarAnilloVacio() {
 }
 
 void AnilloPuedeRotarVariasVeces() {
-
+	Anillo<int>* a = new Anillo<int>();
+	a->agregar(1);
+	a->agregar(2);
+	a->agregar(3);
+	ASSERT_EQ(a->siguiente(), 3);
+	ASSERT_EQ(a->siguiente(), 2);
+	ASSERT_EQ(a->siguiente(), 1);
+	ASSERT_EQ(a->siguiente(), 3);
+	ASSERT_EQ(a->siguiente(), 2);
+	ASSERT_EQ(a->siguiente(), 1);
+	delete a;
 }
 
 void AnilloDeAnilloPuedenCrearseYUsarse(){
+	Anillo<Anillo<int> >* a = new Anillo<Anillo<int> >;
 
+	Anillo<int>* b = new Anillo<int>;
+	b->agregar(11);
+	b->agregar(22);
+
+	a->agregar(*b);
+	kill = true;
+	a->agregar(*b);
+
+	Anillo<int>* c = new Anillo<int> (*b);
+	c->siguiente();
+	c->agregar(33);
+	a->agregar(*c);
+
+	ASSERT_EQ(a->siguiente(), *c);
+	ASSERT_EQ(a->siguiente(), *b);
+	ASSERT_EQ(a->siguiente(), *b);
+
+	a->eliminar(*c);
+
+	ASSERT_EQ(a->siguiente(), *b);
+
+	delete c;
+	delete b;
+	delete a;
 }
 
 int main(void) {
-	RUN_TEST(AnilloNuevoEsVacio);
-	RUN_TEST(AnilloUnitarioDaSiguiente);
-	RUN_TEST(MostrarAnilloVacio);
-	RUN_TEST(AnilloPuedeRotarVariasVeces);
+	//RUN_TEST(AnilloNuevoEsVacio);
+	//RUN_TEST(AnilloUnitarioDaSiguiente);
+	//RUN_TEST(MostrarAnilloVacio);
+	//RUN_TEST(AnilloPuedeRotarVariasVeces);
 	RUN_TEST(AnilloDeAnilloPuedenCrearseYUsarse);
 	return 0;
 }
