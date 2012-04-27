@@ -4,3 +4,6 @@ all:
 optimizado:
 	g++ tests.cpp -o anillo -O2 -Wno-unused-result
 
+debug:
+	g++ tests.cpp -o anillo -g
+
