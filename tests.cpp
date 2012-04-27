@@ -78,7 +78,6 @@ void AnilloDeAnilloPuedenCrearseYUsarse(){
 	b->agregar(22);
 
 	a->agregar(*b);
-	kill = true;
 	a->agregar(*b);
 
 	Anillo<int>* c = new Anillo<int> (*b);
@@ -95,6 +94,7 @@ void AnilloDeAnilloPuedenCrearseYUsarse(){
 	ASSERT_EQ(a->siguiente(), *b);
 
 	delete c;
+	return;
 	delete b;
 	delete a;
 }

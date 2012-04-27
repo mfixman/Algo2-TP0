@@ -2,8 +2,7 @@
 #include <cstdio>
 #include "anillo.h"
 
-#define LOG cerr << '\n' << '[' << __LINE__ << "] "
-
+#define LOG cerr << '\n' << __FILE__ << " [" << __LINE__ << "] "
 
 bool kill = false;
 
@@ -118,7 +117,7 @@ void Anillo<T>::agregar(const T& nuevoElemento) {
 
 template <typename T>
 void Anillo<T>::eliminar(const T& elementoAEliminar) {
-	LOG << *this;
+	//LOG << *this;
 
 	struct Nodo* punteroAlNodo;
 	LOG ;

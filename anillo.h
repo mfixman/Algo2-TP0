@@ -99,7 +99,7 @@ private:
 		~Nodo() {
 		}
 
-		Nodo(const T& elemento_) : elemento(elemento_) {
+		Nodo(const T elemento_) : elemento(elemento_) {
 		}
 
 		Nodo() {
