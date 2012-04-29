@@ -94,16 +94,15 @@ void AnilloDeAnilloPuedenCrearseYUsarse(){
 	ASSERT_EQ(a->siguiente(), *b);
 
 	delete c;
-	return;
 	delete b;
 	delete a;
 }
 
 int main(void) {
-	//RUN_TEST(AnilloNuevoEsVacio);
-	//RUN_TEST(AnilloUnitarioDaSiguiente);
-	//RUN_TEST(MostrarAnilloVacio);
-	//RUN_TEST(AnilloPuedeRotarVariasVeces);
+	RUN_TEST(AnilloNuevoEsVacio);
+	RUN_TEST(AnilloUnitarioDaSiguiente);
+	RUN_TEST(MostrarAnilloVacio);
+	RUN_TEST(AnilloPuedeRotarVariasVeces);
 	RUN_TEST(AnilloDeAnilloPuedenCrearseYUsarse);
 	return 0;
 }

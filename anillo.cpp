@@ -40,7 +40,8 @@ Anillo<T>::Anillo(const Anillo<T>& otro) {
         anterior = nuevo;
 		nodo = nodo->proximo;
 	} while (nodo != otro.primero);
-	anterior->proximo = nodo;
+	anterior->proximo = primero;
+	primero->anterior = anterior;
 
 	longitud = otro.longitud;
 }
@@ -56,7 +57,7 @@ Anillo<T>::~Anillo()
 
 template <typename T>
 bool Anillo<T>::operator==(const Anillo<T>& otro) const {
-	if (longitud != otro.longitud || elNodoAnterior != otro.elNodoAnterior)
+	if (longitud != otro.longitud)
 		return false;
 
 	Nodo* a = primero;
@@ -67,6 +68,9 @@ bool Anillo<T>::operator==(const Anillo<T>& otro) const {
 		assert(b != NULL);
 
 		if (a->elemento != b->elemento)
+			return false;
+
+		if ((a == elNodoAnterior) != (b == otro.elNodoAnterior))
 			return false;
 
 		a = a->proximo;
@@ -123,7 +127,7 @@ template <typename T>
 void Anillo<T>::eliminar(const T& elementoAEliminar) {
 	//LOG << *this;
 
-	struct Nodo* punteroAlNodo;
+	Nodo* punteroAlNodo;
 	LOG ;
 
 	if (primero->elemento == elementoAEliminar) {
@@ -139,6 +143,8 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 			elNodoAnterior = NULL;
 		}
 
+		assert(punteroAlNodo->anterior != NULL);
+		assert(punteroAlNodo->proximo != NULL);
 		punteroAlNodo->anterior->proximo = punteroAlNodo->proximo;
 		punteroAlNodo->proximo->anterior = punteroAlNodo->anterior;
 		longitud--;
