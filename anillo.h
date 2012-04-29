@@ -96,13 +96,7 @@ private:
 		Nodo* proximo;
 		Nodo* anterior;
 
-		~Nodo() {
-		}
-
 		Nodo(const T& elemento_) : elemento(elemento_) {
-		}
-
-		Nodo() {
 		}
 	};
 
@@ -117,8 +111,6 @@ private:
 			assert(false);
 			return *this;
 	}
-
-	//Aca va la implementacion del nodo.
 };
 
 template<class T>

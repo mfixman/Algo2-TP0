@@ -7,25 +7,18 @@
 bool kill = false;
 
 template <typename T>
-Anillo<T>::Anillo()
-{
-	primero = NULL;
-	elNodoAnterior = NULL;
-	longitud = 0;
+Anillo<T>::Anillo() : primero(NULL), elNodoAnterior(NULL), longitud(0) {
 }
 
 template <typename T>
-Anillo<T>::Anillo(const Anillo<T>& otro) {
+Anillo<T>::Anillo(const Anillo<T>& otro) : primero(NULL), elNodoAnterior(NULL), longitud(0) {
 	Nodo* nodo = otro.primero;
 	Nodo* anterior = NULL;
 
 	do {
-		Nodo* nuevo = new Nodo();
-
 		assert(nodo != NULL);
-		assert(nuevo != NULL);
 
-		nuevo->elemento = nodo->elemento;
+		Nodo* nuevo = new Nodo(nodo->elemento);
 		nuevo->anterior = anterior;
 
 		if (nodo == otro.primero)
@@ -40,6 +33,9 @@ Anillo<T>::Anillo(const Anillo<T>& otro) {
         anterior = nuevo;
 		nodo = nodo->proximo;
 	} while (nodo != otro.primero);
+
+	assert(primero != NULL);
+	assert(anterior != NULL);
 	anterior->proximo = primero;
 	primero->anterior = anterior;
 
@@ -47,8 +43,7 @@ Anillo<T>::Anillo(const Anillo<T>& otro) {
 }
 
 template <typename T>
-Anillo<T>::~Anillo()
-{
+Anillo<T>::~Anillo() {
 	while (!esVacio()) eliminar(siguiente());
 }
 
@@ -78,14 +73,12 @@ bool Anillo<T>::operator==(const Anillo<T>& otro) const {
 }
 
 template <typename T>
-bool Anillo<T>::esVacio() const
-{
+bool Anillo<T>::esVacio() const {
 	return longitud == 0;
 }
 
 template <typename T>
-int Anillo<T>::tamanio() const
-{
+int Anillo<T>::tamanio() const {
 	return longitud;
 }
 
@@ -150,12 +143,12 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 }
 
 template <typename T>
-bool Anillo<T>::huboAnterior() const{
+bool Anillo<T>::huboAnterior() const {
 	return elNodoAnterior != NULL;
 }
 
 template <typename T>
-const T& Anillo<T>::anterior() const{
+const T& Anillo<T>::anterior() const {
 	assert(elNodoAnterior != NULL);
 	return elNodoAnterior->elemento ;
 }

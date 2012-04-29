@@ -70,7 +70,7 @@ void AnilloPuedeRotarVariasVeces() {
 	delete a;
 }
 
-void AnilloDeAnilloPuedenCrearseYUsarse(){
+void AnilloDeAnilloPuedenCrearseYUsarse() {
 	Anillo<Anillo<int> >* a = new Anillo<Anillo<int> >;
 
 	Anillo<int>* b = new Anillo<int>;
