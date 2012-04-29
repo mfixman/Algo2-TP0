@@ -28,6 +28,12 @@ Anillo<T>::Anillo(const Anillo<T>& otro) {
 		nuevo->elemento = nodo->elemento;
 		nuevo->anterior = anterior;
 
+		if (nodo == otro.primero)
+			primero = nuevo;
+
+		if (nodo == otro.elNodoAnterior)
+			elNodoAnterior = nuevo;
+
 		if (anterior != NULL)
 			anterior->proximo = nuevo;
 
@@ -36,8 +42,6 @@ Anillo<T>::Anillo(const Anillo<T>& otro) {
 	} while (nodo != otro.primero);
 	anterior->proximo = nodo;
 
-    primero = nodo;
-	elNodoAnterior = otro.elNodoAnterior;
 	longitud = otro.longitud;
 }
 
