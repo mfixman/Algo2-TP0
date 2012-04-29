@@ -49,10 +49,7 @@ Anillo<T>::Anillo(const Anillo<T>& otro) {
 template <typename T>
 Anillo<T>::~Anillo()
 {
-	while (!esVacio()) {
-		LOG << longitud;
-		eliminar(siguiente());
-	}
+	while (!esVacio()) eliminar(siguiente());
 }
 
 template <typename T>
@@ -125,10 +122,7 @@ void Anillo<T>::agregar(const T& nuevoElemento) {
 
 template <typename T>
 void Anillo<T>::eliminar(const T& elementoAEliminar) {
-	//LOG << *this;
-
 	Nodo* punteroAlNodo;
-	LOG ;
 
 	if (primero->elemento == elementoAEliminar) {
 		punteroAlNodo = primero;
@@ -137,7 +131,6 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 		punteroAlNodo = this->buscar(elementoAEliminar);
 	}
 
-	LOG ;
 	if (punteroAlNodo != NULL) {
 		if (punteroAlNodo == elNodoAnterior) {
 			elNodoAnterior = NULL;
@@ -149,9 +142,7 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 		punteroAlNodo->proximo->anterior = punteroAlNodo->anterior;
 		longitud--;
 
-		LOG ;
 		delete punteroAlNodo;
-		LOG ;
 
 		if (longitud == 0)
 			primero = elNodoAnterior = NULL;
@@ -176,19 +167,16 @@ void Anillo<T>::retroceder() {
 
 template <typename T>
 struct Anillo<T>::Nodo * Anillo<T>::buscar(const T& elementoABuscar) {
-	LOG << longitud;
 	if (longitud == 0)
 		return NULL;
 
 	struct Nodo* punteroANodo = primero;
 	assert (punteroANodo != NULL);
-	LOG << elementoABuscar;
 
 	do {
 		if (punteroANodo->elemento == elementoABuscar)
 			return punteroANodo;
 
-		LOG << longitud << ' ' << punteroANodo << ' ' << primero;
 		punteroANodo = punteroANodo->proximo;
 	} while (punteroANodo != primero);
 

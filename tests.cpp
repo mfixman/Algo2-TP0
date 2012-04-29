@@ -95,6 +95,10 @@ void AnilloDeAnilloPuedenCrearseYUsarse(){
 
 	delete c;
 	delete b;
+
+	Anillo<int> k = a->siguiente();
+	ASSERT_EQ(k.siguiente(), 22);
+
 	delete a;
 }
 
