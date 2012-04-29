@@ -101,7 +101,7 @@ private:
 	};
 
 	Nodo* primero;
-	Nodo* elNodoAnterior;
+	Nodo* nodoAnterior;
 
 	int longitud;
 	Nodo* buscar(const T&);
@@ -119,3 +119,4 @@ ostream& operator<<(ostream& out, const Anillo<T>& a) {
 }
 
 #endif //ANILLO_H_
+

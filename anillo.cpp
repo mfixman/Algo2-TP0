@@ -4,17 +4,19 @@
 
 #define LOG cerr << '\n' << __FILE__ << " [" << __LINE__ << "] "
 
-bool kill = false;
-
 template <typename T>
-Anillo<T>::Anillo() : primero(NULL), elNodoAnterior(NULL), longitud(0) {
+Anillo<T>::Anillo() : primero(NULL), nodoAnterior(NULL), longitud(0) {
 }
 
 template <typename T>
-Anillo<T>::Anillo(const Anillo<T>& otro) : primero(NULL), elNodoAnterior(NULL), longitud(0) {
+Anillo<T>::Anillo(const Anillo<T>& otro) : primero(NULL), nodoAnterior(NULL), longitud(0) {
+	if (otro.esVacio())
+		return;
+
 	Nodo* nodo = otro.primero;
 	Nodo* anterior = NULL;
 
+	// Recorrer todos los nodos, copiarlos, y "engancharlos" a nuestro anillo.
 	do {
 		assert(nodo != NULL);
 
@@ -24,8 +26,8 @@ Anillo<T>::Anillo(const Anillo<T>& otro) : primero(NULL), elNodoAnterior(NULL), 
 		if (nodo == otro.primero)
 			primero = nuevo;
 
-		if (nodo == otro.elNodoAnterior)
-			elNodoAnterior = nuevo;
+		if (nodo == otro.nodoAnterior)
+			nodoAnterior = nuevo;
 
 		if (anterior != NULL)
 			anterior->proximo = nuevo;
@@ -55,6 +57,9 @@ bool Anillo<T>::operator==(const Anillo<T>& otro) const {
 	Nodo* a = primero;
 	Nodo* b = otro.primero;
 
+	// Recorrer todos los nodos de los dos anillos, y ver que
+	// todos los elementos en el orden respectivo sean iguales
+	// y que tengan el mismo nodoAnterior.
 	for (int i = 0; i < longitud; i++) {
 		assert(a != NULL);
 		assert(b != NULL);
@@ -62,7 +67,7 @@ bool Anillo<T>::operator==(const Anillo<T>& otro) const {
 		if (a->elemento != b->elemento)
 			return false;
 
-		if ((a == elNodoAnterior) != (b == otro.elNodoAnterior))
+		if ((a == nodoAnterior) != (b == otro.nodoAnterior))
 			return false;
 
 		a = a->proximo;
@@ -87,27 +92,27 @@ const T& Anillo<T>::siguiente() {
 	assert(!esVacio());
 	assert(primero != NULL);
 
-	elNodoAnterior = primero;
+	nodoAnterior = primero;
 	primero = primero->proximo;
-	return elNodoAnterior->elemento;
+	return nodoAnterior->elemento;
 }
 
 template <typename T>
 void Anillo<T>::agregar(const T& nuevoElemento) {
-	Nodo* punteroNuevoNodo = new Nodo(nuevoElemento);              //creo nuevo nodo con el elemento
+	Nodo* nodo = new Nodo(nuevoElemento);              //creo nuevo nodo con el elemento
 
 	if (primero == NULL) {
-		primero = punteroNuevoNodo;                  //hago que el anillo apunte al nuevo nodo
+		primero = nodo;                  //hago que el anillo apunte al nuevo nodo
 		primero->proximo = primero;
 		primero->anterior = primero;
 	} else {
-		punteroNuevoNodo->proximo = primero;          //lo pongo antes del que era el proximo
-		punteroNuevoNodo->anterior = primero->anterior;   //lo pongo despues del que ya paso
+		nodo->proximo = primero;          //lo pongo antes del que era el proximo
+		nodo->anterior = primero->anterior;   //lo pongo despues del que ya paso
 
-		primero->anterior = punteroNuevoNodo;
-		punteroNuevoNodo->anterior->proximo = punteroNuevoNodo;
+		primero->anterior = nodo;
+		nodo->anterior->proximo = nodo;
 
-		primero = punteroNuevoNodo;
+		primero = nodo;
 	}
 
 	longitud++;                                      //aumento la longitud del anillo
@@ -115,42 +120,42 @@ void Anillo<T>::agregar(const T& nuevoElemento) {
 
 template <typename T>
 void Anillo<T>::eliminar(const T& elementoAEliminar) {
-	Nodo* punteroAlNodo;
+	Nodo* nodo;
 
+	// Si el elemento a eliminar es el primero, poner un nuevo primero.
 	if (primero->elemento == elementoAEliminar) {
-		punteroAlNodo = primero;
-		primero = punteroAlNodo->proximo;
+		nodo = primero;
+		primero = nodo->proximo;
 	} else {
-		punteroAlNodo = this->buscar(elementoAEliminar);
+		nodo = this->buscar(elementoAEliminar);
+		if (nodo == NULL)
+			return;
 	}
 
-	if (punteroAlNodo != NULL) {
-		if (punteroAlNodo == elNodoAnterior) {
-			elNodoAnterior = NULL;
-		}
+	assert(nodo != NULL);
+	assert(nodo->anterior != NULL);
+	assert(nodo->proximo != NULL);
+	nodo->anterior->proximo = nodo->proximo;
+	nodo->proximo->anterior = nodo->anterior;
+	delete nodo;
 
-		assert(punteroAlNodo->anterior != NULL);
-		assert(punteroAlNodo->proximo != NULL);
-		punteroAlNodo->anterior->proximo = punteroAlNodo->proximo;
-		punteroAlNodo->proximo->anterior = punteroAlNodo->anterior;
-		longitud--;
+	if (nodo == nodoAnterior)
+		nodoAnterior = NULL;
 
-		delete punteroAlNodo;
-
-		if (longitud == 0)
-			primero = elNodoAnterior = NULL;
-	}
+	longitud--;
+	if (longitud == 0)
+		primero = NULL;
 }
 
 template <typename T>
 bool Anillo<T>::huboAnterior() const {
-	return elNodoAnterior != NULL;
+	return nodoAnterior != NULL;
 }
 
 template <typename T>
 const T& Anillo<T>::anterior() const {
-	assert(elNodoAnterior != NULL);
-	return elNodoAnterior->elemento ;
+	assert(nodoAnterior != NULL);
+	return nodoAnterior->elemento;
 }
 
 template <typename T>
@@ -159,19 +164,19 @@ void Anillo<T>::retroceder() {
 }
 
 template <typename T>
-struct Anillo<T>::Nodo * Anillo<T>::buscar(const T& elementoABuscar) {
+struct Anillo<T>::Nodo* Anillo<T>::buscar(const T& elementoABuscar) {
 	if (longitud == 0)
 		return NULL;
 
-	struct Nodo* punteroANodo = primero;
-	assert (punteroANodo != NULL);
+	Nodo* nodo = primero;
+	assert (nodo != NULL);
 
 	do {
-		if (punteroANodo->elemento == elementoABuscar)
-			return punteroANodo;
+		if (nodo->elemento == elementoABuscar)
+			return nodo;
 
-		punteroANodo = punteroANodo->proximo;
-	} while (punteroANodo != primero);
+		nodo = nodo->proximo;
+	} while (nodo != primero);
 
 	return NULL;
 }
@@ -184,7 +189,7 @@ ostream& Anillo<T>::mostrarAnillo(ostream& out) const {
 	if (actual != NULL) {
 		do {
 			out << actual->elemento;
-			if (actual == elNodoAnterior)
+			if (actual == nodoAnterior)
 				out << '*';
 
 			actual = actual->proximo;
