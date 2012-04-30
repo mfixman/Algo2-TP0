@@ -64,7 +64,7 @@ bool Anillo<T>::operator==(const Anillo<T>& otro) const {
 		assert(a != NULL);
 		assert(b != NULL);
 
-		if (a->elemento != b->elemento)
+		if (!(a->elemento == b->elemento))
 			return false;
 
 		if ((a == nodoAnterior) != (b == otro.nodoAnterior))
@@ -186,11 +186,15 @@ ostream& Anillo<T>::mostrarAnillo(ostream& out) const {
 	out << '[';
 
 	Nodo* actual = primero;
-	if (actual != NULL) {
+	if (!esVacio()) {
+		assert(actual != NULL);
+
 		do {
 			out << actual->elemento;
 			if (actual == nodoAnterior)
 				out << '*';
+			if (actual->proximo != primero)
+				out << ", ";
 
 			actual = actual->proximo;
 		} while (actual != primero);
