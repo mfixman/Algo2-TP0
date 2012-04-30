@@ -56,6 +56,18 @@ void MostrarAnilloVacio() {
 	delete a;
 }
 
+
+void MostrarAnilloDeInt() {
+	Anillo<int>* a = new Anillo<int>();
+	a->agregar(1);
+	a->agregar(2);
+	a->agregar(3);
+	ASSERT_EQ(a->siguiente(), 3);
+	ASSERT_STR_EQ(to_s(a), "[2, 1, 3*]");
+	delete a;
+}
+
+
 void AnilloPuedeRotarVariasVeces() {
 	Anillo<int>* a = new Anillo<int>();
 	a->agregar(1);
@@ -102,12 +114,68 @@ void AnilloDeAnilloPuedenCrearseYUsarse() {
 	delete a;
 }
 
+void CompararAnilloDeAnillo() {
+	Anillo<Anillo<int> >* a = new Anillo<Anillo<int> >;
+
+	Anillo<int>* b = new Anillo<int>;
+	b->agregar(11);
+	b->agregar(22);
+
+	a->agregar(*b);
+	a->agregar(*b);
+
+	Anillo<int>* c = new Anillo<int> (*b);
+	c->siguiente();
+	c->agregar(33);
+	a->agregar(*c);
+
+	Anillo<Anillo<int> >* copia = new Anillo<Anillo<int> > (*a);
+
+	ASSERT_EQ(*copia,*a);
+
+	ASSERT_EQ(to_s(copia), to_s(a));
+
+	delete c;
+	delete b;
+	delete a;
+	delete copia;
+}
+
+void MostrarAnilloDeAnillo() {
+	
+	Anillo<Anillo<int> >* a = new Anillo<Anillo<int> >;
+
+	Anillo<int>* b = new Anillo<int>;
+	b->agregar(11);
+	b->agregar(22);
+
+	a->agregar(*b);
+	a->agregar(*b);
+
+	Anillo<int>* c = new Anillo<int> (*b);
+	c->siguiente();
+	c->agregar(33);
+	a->agregar(*c);
+	a->siguiente();
+	
+
+	ASSERT_EQ(to_s(a), "[[22, 11], [22, 11], [33, 11, 22*]*]")
+
+	delete c;
+	delete b;
+	delete a;
+
+}
+
 int main(void) {
 	RUN_TEST(AnilloNuevoEsVacio);
 	RUN_TEST(AnilloUnitarioDaSiguiente);
 	RUN_TEST(MostrarAnilloVacio);
+	RUN_TEST(MostrarAnilloDeInt);
 	RUN_TEST(AnilloPuedeRotarVariasVeces);
 	RUN_TEST(AnilloDeAnilloPuedenCrearseYUsarse);
+	RUN_TEST(CompararAnilloDeAnillo);
+	RUN_TEST(MostrarAnilloDeAnillo);
 	return 0;
 }
 

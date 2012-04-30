@@ -92,11 +92,21 @@ public:
 
 private:
 	struct Nodo {
-		T elemento; //de tipo T
+		T* punteroElemento;			//puntero al elemento
 		Nodo* proximo;
 		Nodo* anterior;
 
-		Nodo(const T& elemento_) : elemento(elemento_) {
+		Nodo(const T& elemento_) {
+			T* puntero = new T(elemento_);		//pido espacio para copiar al elemento de tipo T
+			punteroElemento = puntero;
+		}
+
+		~Nodo() {	
+			delete punteroElemento;
+		}
+
+		const T& elemento() const {
+			return *punteroElemento;
 		}
 	};
 

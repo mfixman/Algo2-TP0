@@ -20,7 +20,7 @@ Anillo<T>::Anillo(const Anillo<T>& otro) : primero(NULL), nodoAnterior(NULL), lo
 	do {
 		assert(nodo != NULL);
 
-		Nodo* nuevo = new Nodo(nodo->elemento);
+		Nodo* nuevo = new Nodo(nodo->elemento());
 		nuevo->anterior = anterior;
 
 		if (nodo == otro.primero)
@@ -64,7 +64,7 @@ bool Anillo<T>::operator==(const Anillo<T>& otro) const {
 		assert(a != NULL);
 		assert(b != NULL);
 
-		if (a->elemento != b->elemento)
+		if (!(a->elemento() == b->elemento()))
 			return false;
 
 		if ((a == nodoAnterior) != (b == otro.nodoAnterior))
@@ -94,7 +94,7 @@ const T& Anillo<T>::siguiente() {
 
 	nodoAnterior = primero;
 	primero = primero->proximo;
-	return nodoAnterior->elemento;
+	return nodoAnterior->elemento();
 }
 
 template <typename T>
@@ -123,11 +123,11 @@ void Anillo<T>::eliminar(const T& elementoAEliminar) {
 	Nodo* nodo;
 
 	// Si el elemento a eliminar es el primero, poner un nuevo primero.
-	if (primero->elemento == elementoAEliminar) {
+	if (primero->elemento() == elementoAEliminar) {
 		nodo = primero;
 		primero = nodo->proximo;
 	} else {
-		nodo = this->buscar(elementoAEliminar);
+		nodo = buscar(elementoAEliminar);
 		if (nodo == NULL)
 			return;
 	}
@@ -155,7 +155,7 @@ bool Anillo<T>::huboAnterior() const {
 template <typename T>
 const T& Anillo<T>::anterior() const {
 	assert(nodoAnterior != NULL);
-	return nodoAnterior->elemento;
+	return nodoAnterior->elemento();
 }
 
 template <typename T>
@@ -172,8 +172,8 @@ struct Anillo<T>::Nodo* Anillo<T>::buscar(const T& elementoABuscar) {
 	assert (nodo != NULL);
 
 	do {
-		if (nodo->elemento == elementoABuscar)
-			return nodo;
+		if (nodo->elemento() == elementoABuscar)
+				return nodo;
 
 		nodo = nodo->proximo;
 	} while (nodo != primero);
@@ -188,11 +188,13 @@ ostream& Anillo<T>::mostrarAnillo(ostream& out) const {
 	Nodo* actual = primero;
 	if (actual != NULL) {
 		do {
-			out << actual->elemento;
+			out << actual->elemento();
 			if (actual == nodoAnterior)
 				out << '*';
 
 			actual = actual->proximo;
+			if (actual != primero)
+				out<<", ";
 		} while (actual != primero);
 	}
 
